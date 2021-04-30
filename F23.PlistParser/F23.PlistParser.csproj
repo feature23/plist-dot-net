@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Internal\" />
+    <Folder Include="Internal\Extensions\" />
+    <Folder Include="Internal\Model\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\F23.PlistParser.Unsafe\F23.PlistParser.Unsafe.csproj" />
+  </ItemGroup>
+</Project>
