@@ -1,37 +1,35 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
-namespace F23.PlistParser.Internal.Model
+namespace F23.PlistParser.Internal.Model;
+
+internal class Header
 {
-    internal class Header
+    public string Magic { init; get; }
+
+    public string Version { init; get; }
+
+    public static Header Create(IRandomAccessReader reader)
     {
-        public string Magic { init; get; }
+        var magicBytes = reader.ReadBytes(0, 6);
+        var versionBytes = reader.ReadBytes(6, 2);
 
-        public string Version { init; get; }
-
-        public static Header Create(IRandomAccessReader reader)
+        return new Header
         {
-            var magicBytes = reader.ReadBytes(0, 6);
-            var versionBytes = reader.ReadBytes(6, 2);
+            Magic = Encoding.ASCII.GetString(magicBytes),
+            Version = Encoding.ASCII.GetString(versionBytes)
+        };
+    }
 
-            return new Header
-            {
-                Magic = Encoding.ASCII.GetString(magicBytes),
-                Version = Encoding.ASCII.GetString(versionBytes)
-            };
+    public void EnsureVersion(string expectedVersion)
+    {
+        if (Magic != "bplist")
+        {
+            throw new InvalidOperationException("Provided data is not a binary plist.");
         }
 
-        public void EnsureVersion(string expectedVersion)
+        if (Version != expectedVersion)
         {
-            if (Magic != "bplist")
-            {
-                throw new InvalidOperationException("Provided data is not a binary plist.");
-            }
-
-            if (Version != expectedVersion)
-            {
-                throw new NotSupportedException($"Provided data is version {Version}. Currently only version 00 is supported.");
-            }
+            throw new NotSupportedException($"Provided data is version {Version}. Currently only version 00 is supported.");
         }
     }
 }

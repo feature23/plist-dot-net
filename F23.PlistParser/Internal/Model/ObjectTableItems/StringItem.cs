@@ -1,37 +1,36 @@
 ﻿using System.Text;
 
-namespace F23.PlistParser.Internal.Model.ObjectTableItems
+namespace F23.PlistParser.Internal.Model.ObjectTableItems;
+
+internal class StringItem : Item<string>
 {
-    internal class StringItem : Item<string>
+    public static StringItem Ascii(byte lengthNibble, IRandomAccessReader mmap, long offset)
     {
-        public static StringItem Ascii(byte lengthNibble, IRandomAccessReader mmap, long offset)
-        {
-            var byteCount = ComputeLength(lengthNibble, mmap, ref offset);
+        var byteCount = ComputeLength(lengthNibble, mmap, ref offset);
 
-            var bytes = mmap.ReadBytes(offset, byteCount);
+        var bytes = mmap.ReadBytes(offset, byteCount);
 
-            var value = Encoding.ASCII.GetString(bytes);
+        var value = Encoding.ASCII.GetString(bytes);
 
-            return new StringItem(PlistObjectTypes.AsciiString, value);
-        }
+        return new StringItem(PlistObjectTypes.AsciiString, value);
+    }
 
-        public static StringItem Unicode(byte lengthNibble, IRandomAccessReader mmap, long offset)
-        {
-            var charLength = ComputeLength(lengthNibble, mmap, ref offset);
+    public static StringItem Unicode(byte lengthNibble, IRandomAccessReader mmap, long offset)
+    {
+        var charLength = ComputeLength(lengthNibble, mmap, ref offset);
 
-            var byteCount = charLength * 2;
+        var byteCount = charLength * 2;
 
-            var bytes = mmap.ReadBytes(offset, byteCount);
+        var bytes = mmap.ReadBytes(offset, byteCount);
 
-            var value = Encoding.BigEndianUnicode.GetString(bytes);
+        var value = Encoding.BigEndianUnicode.GetString(bytes);
 
-            return new StringItem(PlistObjectTypes.UnicodeString, value);
-        }
+        return new StringItem(PlistObjectTypes.UnicodeString, value);
+    }
 
-        private StringItem(PlistObjectTypes type, string value)
-        {
-            Type = type;
-            ValueGetter = () => value;
-        }
+    private StringItem(PlistObjectTypes type, string value)
+    {
+        Type = type;
+        ValueGetter = () => value;
     }
 }

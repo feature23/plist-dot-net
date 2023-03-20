@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace F23.PlistParser.Tests.Extensions;
 
-namespace F23.PlistParser.Tests.Extensions
+internal static class RangeExtensions
 {
-    internal static class RangeExtensions
+    public static IEnumerator<int> GetEnumerator(this Range range)
     {
-        public static IEnumerator<int> GetEnumerator(this Range range)
-        {
-            int start = range.Start.Value;
-            int end = range.End.Value;
+        int start = range.Start.Value;
+        int end = range.End.Value;
 
-            for (var i = start; i < end; i++)
-            {
-                yield return i;
-            }
+        for (var i = start; i < end; i++)
+        {
+            yield return i;
         }
     }
 }

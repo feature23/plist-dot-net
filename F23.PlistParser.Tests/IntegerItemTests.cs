@@ -1,37 +1,34 @@
 ﻿using F23.PlistParser.Internal.Model.ObjectTableItems;
 
-using Xunit;
+namespace F23.PlistParser.Tests;
 
-namespace F23.PlistParser.Tests
+public class IntegerItemTests : AbstractItemTest
 {
-    public class IntegerItemTests : AbstractItemTest
+    [Fact]
+    public void ParseInt32Zero()
     {
-        [Fact]
-        public void ParseInt32Zero()
-        {
-            // Arrange
-            var reader = CreateReader(0);
+        // Arrange
+        var reader = CreateReader(0);
 
-            // Act
-            var item = new IntegerItem(0b0, reader, 0);
-            var value = item.TypedValue();
+        // Act
+        var item = new IntegerItem(0b0, reader, 0);
+        var value = item.TypedValue();
 
-            // Assert
-            Assert.Equal(0, value);
-        }
+        // Assert
+        Assert.Equal(0, value);
+    }
 
-        [Fact]
-        public void ParseInt64Zero()
-        {
-            // Arrange
-            var reader = CreateReader(0L);
+    [Fact]
+    public void ParseInt64Zero()
+    {
+        // Arrange
+        var reader = CreateReader(0L);
 
-            // Act
-            var item = new IntegerItem(0b0, reader, 0);
-            var value = item.TypedValue();
+        // Act
+        var item = new IntegerItem(0b0, reader, 0);
+        var value = item.TypedValue();
 
-            // Assert
-            Assert.Equal(0L, value);
-        }
+        // Assert
+        Assert.Equal(0L, value);
     }
 }

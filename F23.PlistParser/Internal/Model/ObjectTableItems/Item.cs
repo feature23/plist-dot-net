@@ -1,62 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using F23.PlistParser.Internal.Extensions;
+﻿using F23.PlistParser.Internal.Extensions;
 
-namespace F23.PlistParser.Internal.Model.ObjectTableItems
+namespace F23.PlistParser.Internal.Model.ObjectTableItems;
+
+internal abstract class Item
 {
-    internal abstract class Item
+    public PlistObjectTypes Type { init; get; }
+
+    public abstract object Value { get; }
+
+    internal static Item Create(IRandomAccessReader mmapView,
+        long offset, Trailer trailer, List<Item> objectTable)
     {
-        public PlistObjectTypes Type { init; get; }
+        var markerByte = mmapView.ReadByte(offset);
+        var (msb, lsb) = markerByte.GetNibblesBigEndian();
 
-        public abstract object Value { get; }
+        var type = (PlistObjectTypes)msb;
+        var dataOffset = offset + 1;
 
-        internal static Item Create(IRandomAccessReader mmapView,
-            long offset, Trailer trailer, List<Item> objectTable)
+        var objectRefSize = trailer.ObjectRefSize;
+
+        return type switch
         {
-            var markerByte = mmapView.ReadByte(offset);
-            var (msb, lsb) = markerByte.GetNibblesBigEndian();
+            PlistObjectTypes.Singleton when lsb == 0b0 =>
+                NullItem.Instance,
 
-            var type = (PlistObjectTypes)msb;
-            var dataOffset = offset + 1;
+            PlistObjectTypes.Singleton when BooleanItem.IsBoolean(lsb) =>
+                new BooleanItem(lsb),
 
-            var objectRefSize = trailer.ObjectRefSize;
+            PlistObjectTypes.Integer =>
+                new IntegerItem(lsb, mmapView, dataOffset),
 
-            return type switch
-            {
-                PlistObjectTypes.Singleton when lsb == 0b0 =>
-                    NullItem.Instance,
+            PlistObjectTypes.Real =>
+                new RealItem(lsb, mmapView, dataOffset),
 
-                PlistObjectTypes.Singleton when BooleanItem.IsBoolean(lsb) =>
-                    new BooleanItem(lsb),
+            PlistObjectTypes.Date =>
+                new DateItem(mmapView, dataOffset),
 
-                PlistObjectTypes.Integer =>
-                    new IntegerItem(lsb, mmapView, dataOffset),
+            PlistObjectTypes.Data =>
+                new DataItem(lsb, mmapView, dataOffset),
 
-                PlistObjectTypes.Real =>
-                    new RealItem(lsb, mmapView, dataOffset),
+            PlistObjectTypes.AsciiString =>
+                StringItem.Ascii(lsb, mmapView, dataOffset),
 
-                PlistObjectTypes.Date =>
-                    new DateItem(mmapView, dataOffset),
+            PlistObjectTypes.UnicodeString =>
+                StringItem.Unicode(lsb, mmapView, dataOffset),
 
-                PlistObjectTypes.Data =>
-                    new DataItem(lsb, mmapView, dataOffset),
+            PlistObjectTypes.Dictionary =>
+                new DictionaryItem(lsb, mmapView, dataOffset, objectRefSize, objectTable),
 
-                PlistObjectTypes.AsciiString =>
-                    StringItem.Ascii(lsb, mmapView, dataOffset),
+            PlistObjectTypes.Array =>
+                new ArrayItem(lsb, mmapView, dataOffset, objectRefSize, objectTable),
 
-                PlistObjectTypes.UnicodeString =>
-                    StringItem.Unicode(lsb, mmapView, dataOffset),
+            // TODO.JB - Set Type?
 
-                PlistObjectTypes.Dictionary =>
-                    new DictionaryItem(lsb, mmapView, dataOffset, objectRefSize, objectTable),
-
-                PlistObjectTypes.Array =>
-                    new ArrayItem(lsb, mmapView, dataOffset, objectRefSize, objectTable),
-
-                // TODO.JB - Set Type?
-
-                _ => throw new NotSupportedException($"Unsupported type: {type}")
-            };
-        }
+            _ => throw new NotSupportedException($"Unsupported type: {type}")
+        };
     }
 }

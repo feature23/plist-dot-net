@@ -1,10 +1,8 @@
-﻿using System;
-namespace F23.PlistParser.Tests
+﻿namespace F23.PlistParser.Tests;
+
+public class DictionaryItemTests
 {
-    public class DictionaryItemTests
+    public DictionaryItemTests()
     {
-        public DictionaryItemTests()
-        {
-        }
     }
 }
