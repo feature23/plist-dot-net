@@ -3,7 +3,7 @@
 internal class BooleanItem : Item<bool>
 {
     public static bool IsBoolean(byte val) =>
-        val == 0b1000 || val == 0b1001;
+        val is 0b1000 or 0b1001;
 
     // Helpers for unit testing
     internal static readonly BooleanItem False = new(0b1000);

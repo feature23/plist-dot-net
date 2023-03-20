@@ -34,7 +34,7 @@ internal class FileRandomAccessReader : IRandomAccessReader
     public Span<byte> ReadBytes(long offset, int num) =>
         _accessor.ReadBytes(offset, num);
 
-    protected virtual void Dispose(bool disposing)
+    protected void Dispose(bool disposing)
     {
         if (!_disposed)
         {

@@ -117,7 +117,7 @@ internal static class ObjectTableObjectMapper<T> where T : new()
         return toListMethod.Invoke(null, new[] { castedItems });
     }
 
-    private static readonly Type[] SimpleTypes = new[]
+    private static readonly Type[] SimpleTypes = 
     {
         typeof(bool),
 

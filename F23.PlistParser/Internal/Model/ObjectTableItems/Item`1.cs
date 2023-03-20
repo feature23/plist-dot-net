@@ -5,7 +5,7 @@ namespace F23.PlistParser.Internal.Model.ObjectTableItems;
 
 internal abstract class Item<T> : Item
 {
-    public Func<T> ValueGetter { init; get; }
+    protected Func<T> ValueGetter { init; get; }
 
     public override object Value => ValueGetter();
 

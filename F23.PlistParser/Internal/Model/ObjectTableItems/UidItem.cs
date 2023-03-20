@@ -6,7 +6,7 @@ internal class UidItem : Item<Guid>
     {
         Type = PlistObjectTypes.Uid;
 
-        throw new NotSupportedException("UID typs is not used supported.");
+        throw new NotSupportedException("UID type is not used supported.");
 
         //Value = val switch
         //{

@@ -28,7 +28,7 @@ internal class ObjectTable
         return new ObjectTable(items);
     }
 
-    public IList<Item> Items { init; get; }
+    public IList<Item> Items { get; }
 
     public PlistObjectTypes TopLevelObjectType => Items[0].Type;
 
