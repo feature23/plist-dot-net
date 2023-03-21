@@ -1,30 +1,25 @@
-﻿using System;
-using System.IO.MemoryMappedFiles;
+﻿using System.IO.MemoryMappedFiles;
 
-namespace F23.PlistParser.Unsafe
+namespace F23.PlistParser.Unsafe;
+
+public static class MemoryMappedViewAccessorExtensions
 {
-    public static class MemoryMappedViewAccessorExtensions
+    public static unsafe Span<byte> ReadBytes(this MemoryMappedViewAccessor
+        accessor, long offset, int num)
     {
-        public static unsafe Span<byte> ReadBytes(this MemoryMappedViewAccessor
-            accessor, long offset, int num)
+        lock (accessor)
         {
-            lock (accessor)
-            {
-                var handle = accessor.SafeMemoryMappedViewHandle;
+            var handle = accessor.SafeMemoryMappedViewHandle;
 
-                unsafe
-                {
-                    try
-                    {
-                        byte* mmapPtr = (byte*)0;
-                        handle.AcquirePointer(ref mmapPtr);
-                        return new Span<byte>(mmapPtr + offset, num);
-                    }
-                    finally
-                    {
-                        handle.ReleasePointer();
-                    }
-                }
+            try
+            {
+                byte* mmapPtr = (byte*)0;
+                handle.AcquirePointer(ref mmapPtr);
+                return new Span<byte>(mmapPtr + offset, num);
+            }
+            finally
+            {
+                handle.ReleasePointer();
             }
         }
     }

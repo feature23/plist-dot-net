@@ -1,58 +1,55 @@
-﻿using System;
-using System.IO;
-using F23.PlistParser.Internal;
+﻿using F23.PlistParser.Internal;
 
-namespace F23.PlistParser.Tests.Support
+namespace F23.PlistParser.Tests.Support;
+
+public class MemoryStreamRandomAccessReader : IRandomAccessReader
 {
-    public class MemoryStreamRandomAccessReader : IRandomAccessReader
+    private readonly BinaryReader _reader;
+    private bool _disposed;
+
+    public MemoryStreamRandomAccessReader(Stream stream)
     {
-        private readonly BinaryReader _reader;
-        private bool _disposed;
+        _reader = new BinaryReader(stream);
+    }
 
-        public MemoryStreamRandomAccessReader(Stream stream)
+    public long Length => _reader.BaseStream.Length;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
         {
-            _reader = new BinaryReader(stream);
-        }
-
-        public long Length => _reader.BaseStream.Length;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _reader.Dispose();
-                }
-
-                _disposed = true;
+                _reader.Dispose();
             }
-        }
 
-        public void Dispose()
-        {
-            // Do not change this code.
-            // Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            _disposed = true;
         }
+    }
 
-        public byte ReadByte(long offset)
+    public void Dispose()
+    {
+        // Do not change this code.
+        // Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    public byte ReadByte(long offset)
+    {
+        lock (_reader)
         {
-            lock (_reader)
-            {
-                _reader.BaseStream.Position = offset;
-                return _reader.ReadByte();
-            }
+            _reader.BaseStream.Position = offset;
+            return _reader.ReadByte();
         }
+    }
 
-        public Span<byte> ReadBytes(long offset, int num)
+    public Span<byte> ReadBytes(long offset, int num)
+    {
+        lock (_reader)
         {
-            lock (_reader)
-            {
-                _reader.BaseStream.Position = offset;
-                return _reader.ReadBytes(num);
-            }
+            _reader.BaseStream.Position = offset;
+            return _reader.ReadBytes(num);
         }
     }
 }

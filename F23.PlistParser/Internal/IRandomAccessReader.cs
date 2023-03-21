@@ -1,13 +1,10 @@
-﻿using System;
+﻿namespace F23.PlistParser.Internal;
 
-namespace F23.PlistParser.Internal
+internal interface IRandomAccessReader : IDisposable
 {
-    internal interface IRandomAccessReader : IDisposable
-    {
-        long Length { get; }
+    long Length { get; }
 
-        byte ReadByte(long offset);
+    byte ReadByte(long offset);
 
-        Span<byte> ReadBytes(long offset, int num);
-    }
+    Span<byte> ReadBytes(long offset, int num);
 }
