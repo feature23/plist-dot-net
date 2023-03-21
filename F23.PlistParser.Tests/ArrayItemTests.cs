@@ -27,6 +27,7 @@ public class ArrayItemTests : AbstractItemTest
         var list = item.TypedValue();
 
         // Assert
+        Assert.NotNull(list);
         Assert.Equal(1, list.Count);
         Assert.IsType<bool>(list[0]);
     }
@@ -54,6 +55,7 @@ public class ArrayItemTests : AbstractItemTest
         var list = item.TypedValue();
 
         // Assert
+        Assert.NotNull(list);
         Assert.Equal(1, list.Count);
         Assert.IsType<bool>(list[0]);
     }
@@ -78,6 +80,7 @@ public class ArrayItemTests : AbstractItemTest
         var list = item.TypedValue();
 
         // Assert
+        Assert.NotNull(list);
         Assert.Equal(1, list.Count);
         Assert.IsType<bool>(list[0]);
     }
@@ -102,6 +105,7 @@ public class ArrayItemTests : AbstractItemTest
         var list = item.TypedValue();
 
         // Assert
+        Assert.NotNull(list);
         Assert.Equal(1, list.Count);
         Assert.IsType<bool>(list[0]);
     }
@@ -126,6 +130,7 @@ public class ArrayItemTests : AbstractItemTest
         var list = item.TypedValue();
 
         // Assert
+        Assert.NotNull(list);
         Assert.Equal(1, list.Count);
         Assert.IsType<bool>(list[0]);
     }

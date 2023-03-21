@@ -5,11 +5,12 @@ namespace F23.PlistParser.Internal.Model.ObjectTableItems;
 
 internal abstract class Item<T> : Item
 {
-    protected Func<T> ValueGetter { init; get; }
+    // protected Func<T> ValueGetter { init; get; }
+    protected abstract T? GetValue();
 
-    public override object Value => ValueGetter();
+    public override object? Value => GetValue();
 
-    public T TypedValue() => (T)Value;
+    public T? TypedValue() => (T?)Value;
 
     protected static int ComputeLength(byte lengthNibble, IRandomAccessReader mmap, ref long offset)
     {

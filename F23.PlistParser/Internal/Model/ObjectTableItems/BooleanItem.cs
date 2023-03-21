@@ -9,10 +9,12 @@ internal class BooleanItem : Item<bool>
     internal static readonly BooleanItem False = new(0b1000);
     internal static readonly BooleanItem True = new(0b1001);
 
+    private readonly bool _value;
+    
     public BooleanItem(byte val)
     {
         // Read value eagerly
-        var value = val switch
+        _value = val switch
         {
             0b1000 => false,
             0b1001 => true,
@@ -20,6 +22,11 @@ internal class BooleanItem : Item<bool>
                 "Provided binary representation could not be parsed as boolean value.")
         };
 
-        ValueGetter = () => value;
+        // ValueGetter = () => value;
     }
+
+    public override PlistObjectTypes Type =>
+        throw new NotSupportedException("PlistObjectType not supported for boolean item.");
+
+    protected override bool GetValue() => _value;
 }

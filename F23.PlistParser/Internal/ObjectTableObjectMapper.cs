@@ -23,6 +23,25 @@ internal static class ObjectTableObjectMapper<T> where T : new()
         return result;
     }
 
+    internal static object ChangeGenericListType(IList<object> items, Type type, bool performConversion = false)
+    {
+        var containedType = type.GenericTypeArguments.First();
+        var castMethod = GetEnumerableCastMethod(containedType);
+        var toListMethod = GetEnumerableToListMethod(containedType);
+
+        var itemsToCast = performConversion ? items.Select(item => Convert.ChangeType(item, containedType)) : items;
+
+        var castedItems = castMethod.Invoke(null, new object?[] { itemsToCast });
+
+        return toListMethod.Invoke(null, new[] { castedItems })!;
+    }
+    
+    internal static MethodInfo GetEnumerableCastMethod(Type containedType) =>
+        typeof(Enumerable).GetMethod(nameof(Enumerable.Cast))!.MakeGenericMethod(containedType);
+
+    internal static MethodInfo GetEnumerableToListMethod(Type containedType) =>
+        typeof(Enumerable).GetMethod(nameof(Enumerable.ToList))!.MakeGenericMethod(containedType);
+    
     private static object MapDictionary(IDictionary<string, object> dictionary, Type targetType)
     {
         var properties = targetType
@@ -30,7 +49,8 @@ internal static class ObjectTableObjectMapper<T> where T : new()
             .Where(p => p.CanRead && p.CanWrite)
             .ToList();
 
-        object result = Activator.CreateInstance(targetType);
+        var result = Activator.CreateInstance(targetType)
+                     ?? throw new InvalidOperationException($"Failed to activate type {targetType.Name}");
 
         foreach (var property in properties)
         {
@@ -92,29 +112,6 @@ internal static class ObjectTableObjectMapper<T> where T : new()
             .ToList();
 
         return ChangeGenericListType(listResult, targetType);
-    }
-
-    private static object ChangeGenericListType(List<object> items, Type type, bool performConversion = false)
-    {
-        var containedType = type.GenericTypeArguments.First();
-        var enumerableType = typeof(Enumerable);
-        var castMethod = enumerableType.GetMethod(nameof(Enumerable.Cast)).MakeGenericMethod(containedType);
-        var toListMethod = enumerableType.GetMethod(nameof(Enumerable.ToList)).MakeGenericMethod(containedType);
-
-        IEnumerable<object> itemsToCast;
-
-        if (performConversion)
-        {
-            itemsToCast = items.Select(item => Convert.ChangeType(item, containedType));
-        }
-        else
-        {
-            itemsToCast = items;
-        }
-
-        var castedItems = castMethod.Invoke(null, new[] { itemsToCast });
-
-        return toListMethod.Invoke(null, new[] { castedItems });
     }
 
     private static readonly Type[] SimpleTypes = 

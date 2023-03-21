@@ -55,6 +55,7 @@ public class ParserTests
         var asm = Assembly.GetExecutingAssembly();
         var fullResourceName = $"{asm.GetName().Name}.Resources.TestCases.{resourceName}.plist";
 
-        return asm.GetManifestResourceStream(fullResourceName);
+        return asm.GetManifestResourceStream(fullResourceName)
+            ?? throw new InvalidOperationException($"Failed to load embedded resource: \"{fullResourceName}\"");
     }
 }

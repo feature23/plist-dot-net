@@ -4,15 +4,15 @@ public class SoftwareUpdatePlist
 {
     public bool AutomaticallyInstallMacOSUpdates { get; set; }
 
-    public string LastAttemptBuildVersion { get; set; }
+    public string? LastAttemptBuildVersion { get; set; }
 
-    public string LastAttemptSystemVersion { get; set; }
+    public string? LastAttemptSystemVersion { get; set; }
 
     public DateTime LastBackgroundSuccessfulDate { get; set; }
 
     public DateTime LastFullSuccessfulDate { get; set; }
 
-    public string LastRecommendedMajorOSBundleIdentifier { get; set; }
+    public string? LastRecommendedMajorOSBundleIdentifier { get; set; }
 
     public long LastRecommendedUpdatesAvailable { get; set; }
 
@@ -24,21 +24,21 @@ public class SoftwareUpdatePlist
 
     public long LastUpdatesAvailable { get; set; }
 
-    public IList<string> PrimaryLanguages { get; set; }
+    public IList<string> PrimaryLanguages { get; set; } = new List<string>();
 
-    public IList<RecommendedUpdate> RecommendedUpdates { get; set; }
+    public IList<RecommendedUpdate> RecommendedUpdates { get; set; } = new List<RecommendedUpdate>();
 
     public bool SkipLocalCDN { get; set; }
 
     public class RecommendedUpdate
     {
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
 
-        public string DisplayVersion { get; set; }
+        public string DisplayVersion { get; set; } = string.Empty;
 
-        public string Identifier { get; set; }
+        public string Identifier { get; set; } = string.Empty;
 
-        public string ProductKey { get; set; }
+        public string ProductKey { get; set; } = string.Empty;
     }
 
     /*

@@ -4,13 +4,13 @@ public class CommercePlist
 {
     public bool AutoUpdate { get; set; }
 
-    public string AutoUpdateMajorOSVersion { get; set; }
+    public string AutoUpdateMajorOSVersion { get; set; } = string.Empty;
 
-    public string AutoUpdateRestartRequiredMajorOSVersion { get; set; }
+    public string AutoUpdateRestartRequiredMajorOSVersion { get; set; } = string.Empty;
 
     public bool LastDoItLaterLogoutFailed { get; set; }
 
-    public IList<string> LockedFilePaths { get; set; }
+    public IList<string> LockedFilePaths { get; set; } = new List<string>();
 
     // TODO.JB - MajorOSUpdate (dictionary, but unsure of structure)
 

@@ -4,6 +4,8 @@ namespace F23.PlistParser.Internal.Model.ObjectTableItems;
 
 internal class StringItem : Item<string>
 {
+    private readonly string _value;
+    
     public static StringItem Ascii(byte lengthNibble, IRandomAccessReader mmap, long offset)
     {
         var byteCount = ComputeLength(lengthNibble, mmap, ref offset);
@@ -31,6 +33,10 @@ internal class StringItem : Item<string>
     private StringItem(PlistObjectTypes type, string value)
     {
         Type = type;
-        ValueGetter = () => value;
+        _value = value;
     }
+
+    public override PlistObjectTypes Type { get; }
+
+    protected override string? GetValue() => _value;
 }

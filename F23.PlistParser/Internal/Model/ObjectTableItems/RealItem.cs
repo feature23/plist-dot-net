@@ -4,6 +4,8 @@ namespace F23.PlistParser.Internal.Model.ObjectTableItems;
 
 internal class RealItem : Item<double>
 {
+    private readonly double _value;
+    
     public RealItem(byte lengthExponent, IRandomAccessReader mmap, long offset)
     {
         var length = (int)Math.Pow(2, lengthExponent);
@@ -11,7 +13,7 @@ internal class RealItem : Item<double>
         var bytes = mmap.ReadBytes(offset, length);
 
         // Read value eagerly
-        var value = length switch
+        _value = length switch
         {
             4 => BinaryPrimitives.ReadSingleBigEndian(bytes),
             8 => BinaryPrimitives.ReadDoubleBigEndian(bytes),
@@ -19,7 +21,11 @@ internal class RealItem : Item<double>
                 $"Invalid length for floating-point type: {length} bytes.")
         };
 
-        Type = PlistObjectTypes.Real;
-        ValueGetter = () => value;
+        // Type = PlistObjectTypes.Real;
+        // ValueGetter = () => value;
     }
+
+    public override PlistObjectTypes Type => PlistObjectTypes.Real;
+
+    protected override double GetValue() => _value;
 }

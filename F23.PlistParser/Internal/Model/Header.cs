@@ -4,20 +4,25 @@ namespace F23.PlistParser.Internal.Model;
 
 internal class Header
 {
-    public string Magic { init; get; }
+    public string Magic { get; }
 
-    public string Version { init; get; }
+    public string Version { get; }
 
     public static Header Create(IRandomAccessReader reader)
     {
         var magicBytes = reader.ReadBytes(0, 6);
         var versionBytes = reader.ReadBytes(6, 2);
 
-        return new Header
-        {
-            Magic = Encoding.ASCII.GetString(magicBytes),
-            Version = Encoding.ASCII.GetString(versionBytes)
-        };
+        return new Header(
+            Encoding.ASCII.GetString(magicBytes),
+            Encoding.ASCII.GetString(versionBytes)  
+        );
+    }
+
+    private Header(string magic, string version)
+    {
+        Magic = magic;
+        Version = version;
     }
 
     public void EnsureVersion(string expectedVersion)

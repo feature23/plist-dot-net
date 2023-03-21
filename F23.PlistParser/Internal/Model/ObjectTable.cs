@@ -38,14 +38,14 @@ internal class ObjectTable
     public bool TopLevelIsDictionary =>
         TopLevelObjectType == PlistObjectTypes.Dictionary;
 
-    public IList<object> TopLevelArray =>
+    public IList<object?> TopLevelArray =>
         Items[0] is ArrayItem arrayItem
-            ? arrayItem.TypedValue()
+            ? arrayItem.TypedValue() ?? throw new InvalidOperationException("Failed to load typed value for ArrayItem")
             : throw new InvalidOperationException("Top-level object is not an array.");
 
-    public IDictionary<string, object> TopLevelDictionary =>
+    public IDictionary<string, object?> TopLevelDictionary =>
         Items[0] is DictionaryItem dictionaryItem
-            ? dictionaryItem.TypedValue()
+            ? dictionaryItem.TypedValue() ?? throw new InvalidOperationException("Failed to load typed value for DictionaryItem")
             : throw new InvalidOperationException("Top-level object is not a dictionary.");
 
     private ObjectTable(IList<Item> items)

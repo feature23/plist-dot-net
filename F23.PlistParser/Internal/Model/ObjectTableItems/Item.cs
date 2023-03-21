@@ -4,9 +4,9 @@ namespace F23.PlistParser.Internal.Model.ObjectTableItems;
 
 internal abstract class Item
 {
-    public PlistObjectTypes Type { init; get; }
+    public abstract PlistObjectTypes Type { get; }
 
-    public abstract object Value { get; }
+    public abstract object? Value { get; }
 
     internal static Item Create(IRandomAccessReader mmapView,
         long offset, Trailer trailer, List<Item> objectTable)
